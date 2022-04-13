@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace xivapi.Models
+namespace xivapi
 {
     public class PvpTeam
     {

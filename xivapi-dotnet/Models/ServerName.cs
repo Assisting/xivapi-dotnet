@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace xivapi.Models
+namespace xivapi
 {
     // In .NET, we call this "a poor man's enum"
     public class ServerName

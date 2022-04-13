@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Web;
 
-namespace xivapi.Models
+namespace xivapi
 {
     public class FreeCompanySearchResult
     {
@@ -107,5 +112,123 @@ namespace xivapi.Models
         public string Rank { get; set; }
         public Uri RankIcon { get; set; }
         public string Server { get; set; }
+    }
+
+    public static class FreeCompanyExtensions
+    {
+        public async static Task<PaginatedResult<FreeCompanySearchResult>> SearchFreeCompany(this XIVAPI api, string searchKey, [Optional] ServerName? serverName, [Optional] int? page)
+        {
+            UriBuilder requestUri = new UriBuilder($"{api.hostname}/freecompany/search");
+            var query = HttpUtility.ParseQueryString(requestUri.Query);
+
+            // Non-optional
+            if (String.IsNullOrWhiteSpace(searchKey))
+            {
+                throw new ArgumentException("Must supply a search key for free company.", paramName: "searchKey");
+            }
+            else
+            {
+                query["name"] = searchKey;
+            }
+
+            // Optional
+            if (serverName != null)
+            {
+                query["server"] = serverName.Value;
+            }
+            if (page != null)
+            {
+                query["page"] = page.ToString();
+            }
+            if (!String.IsNullOrWhiteSpace(api.apiKey))
+            {
+                query["private_key"] = api.apiKey;
+            }
+
+            requestUri.Query = query.ToString();
+
+            var response = await api.httpClient.GetAsync(requestUri.Uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<PaginatedResult<FreeCompanySearchResult>>();
+            }
+            else
+            {
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:
+                        throw new HttpRequestException($"Remote service returned not found at {response.RequestMessage.RequestUri}", null, HttpStatusCode.NotFound);
+                    case HttpStatusCode.TooManyRequests:
+                        throw new HttpRequestException($"Rate limited by remote service.", null, HttpStatusCode.TooManyRequests);
+                    case HttpStatusCode.ServiceUnavailable:
+                        throw new HttpRequestException($"Remote service under mainenance.", null, HttpStatusCode.ServiceUnavailable);
+                    default:
+                        throw new HttpRequestException($"Remote service returned non-success error code {response.StatusCode} with content {response.Content}", null, response.StatusCode);
+                }
+            }
+        }
+
+        public async static Task<FreeCompanyGetResult> GetFreeCompany(this XIVAPI api, FreeCompanySearchResult searchResult, [Optional] IList<string>? additionalData, [Optional] bool? includeMembers)
+        {
+            if (additionalData == null)
+            {
+                additionalData = new List<string>();
+            }
+            if (!additionalData.Contains("FCM") && includeMembers == true)
+            {
+                additionalData.Add("FCM");
+            }
+            return await GetFreeCompany(api, searchResult.ID, additionalData);
+        }
+
+        public async static Task<FreeCompanyGetResult> GetFreeCompany(this XIVAPI api, string ID, [Optional] IList<string>? additionalData, [Optional] bool? includeMembers)
+        {
+            if (additionalData == null)
+            {
+                additionalData = new List<string>();
+            }
+            if (!additionalData.Contains("FCM") && includeMembers == true)
+            {
+                additionalData.Add("FCM");
+            }
+
+            // Non-optional
+            if (String.IsNullOrWhiteSpace(ID))
+            {
+                throw new ArgumentException("Must supply an ID to retrieve a free company.", paramName: "ID");
+            }
+            UriBuilder requestUri = new UriBuilder($"{api.hostname}/freecompany/{ID}");
+            var query = HttpUtility.ParseQueryString(requestUri.Query);
+
+            // Optional
+            if (additionalData.Count > 0)
+            {
+                query["data"] = String.Join(',', additionalData);
+            }
+
+            requestUri.Query = query.ToString();
+
+            var response = await api.httpClient.GetAsync(requestUri.Uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<FreeCompanyGetResult>();
+            }
+            else
+            {
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:
+                        throw new HttpRequestException($"Remote service returned not found at {response.RequestMessage.RequestUri}", null, HttpStatusCode.NotFound);
+                    case HttpStatusCode.TooManyRequests:
+                        throw new HttpRequestException($"Rate limited by remote service.", null, HttpStatusCode.TooManyRequests);
+                    case HttpStatusCode.ServiceUnavailable:
+                        throw new HttpRequestException($"Remote service under mainenance.", null, HttpStatusCode.ServiceUnavailable);
+                    default:
+                        throw new HttpRequestException($"Remote service returned non-success error code {response.StatusCode} with content {response.Content}", null, response.StatusCode);
+                }
+            }
+        }
     }
 }

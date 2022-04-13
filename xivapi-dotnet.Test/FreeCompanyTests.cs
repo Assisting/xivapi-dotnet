@@ -1,6 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using xivapi;
-using xivapi.Models;
 
 namespace xivapi_dotnet.Test
 {
