@@ -15,12 +15,22 @@ namespace xivapi
         public string ID { get; set; }
         public string Name { get; set; }
         public string Server { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public class FreeCompanyGetResult
     {
         public FreeCompany FreeCompany { get; set; }
-        public IList<FreeCompanyMember>? FreeCompanyMembers { get; set; }
+        public IList<LightCharacter>? FreeCompanyMembers { get; set; }
+
+        public override string ToString()
+        {
+            return FreeCompany.Name;
+        }
     }
 
     public class FreeCompany
@@ -49,6 +59,11 @@ namespace xivapi
         {
             return DateTimeOffset.FromUnixTimeSeconds(Formed);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public class Estate
@@ -67,6 +82,10 @@ namespace xivapi
                 HousingArea = splitPlotArray[2]
             };
         }
+        public override string ToString()
+        {
+            return $"{Name}: {Plot}";
+        }
     }
 
     public class Plot
@@ -81,6 +100,11 @@ namespace xivapi
         public Uri Icon { get; set; }
         public string Name { get; set; }
         public bool Status { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Name}: {Status}";
+        }
     }
 
     public class Ranking
@@ -94,6 +118,11 @@ namespace xivapi
         public string Name { get; set; }
         public int Progress { get; set; }
         public string Rank { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Name}: {Rank}";
+        }
     }
 
     public class Seeking
@@ -101,9 +130,14 @@ namespace xivapi
         public Uri Icon { get; set; }
         public string Name { get; set; }
         public bool Status { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Name}: {Status}";
+        }
     }
 
-    public class FreeCompanyMember
+    public class LightCharacter
     {
         public Uri Avatar { get; set; }
         public int FeastMatches { get; set; }
@@ -112,6 +146,12 @@ namespace xivapi
         public string Rank { get; set; }
         public Uri RankIcon { get; set; }
         public string Server { get; set; }
+        public string Name { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public static class FreeCompanyExtensions
@@ -205,6 +245,10 @@ namespace xivapi
             if (additionalData.Count > 0)
             {
                 query["data"] = String.Join(',', additionalData);
+            }
+            if (!String.IsNullOrWhiteSpace(api.apiKey))
+            {
+                query["private_key"] = api.apiKey;
             }
 
             requestUri.Query = query.ToString();

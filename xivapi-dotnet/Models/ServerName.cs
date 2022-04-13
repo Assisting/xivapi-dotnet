@@ -7,7 +7,28 @@ using System.Threading.Tasks;
 namespace xivapi
 {
     // In .NET, we call this "a poor man's enum"
-    public class ServerName
+    public interface IRegion
+    {
+        public string Value { get; }
+    }
+
+    public class DataCentre : IRegion
+    {
+        private DataCentre(string name) { Value = name; }
+        public string Value { get; private set; }
+
+        public static DataCentre Elemental { get { return new DataCentre("_dc_elemental"); } }
+        public static DataCentre Gaia { get { return new DataCentre("_dc_gaia"); } }
+        public static DataCentre Mana { get { return new DataCentre("_dc_mana"); } }
+        public static DataCentre Primal { get { return new DataCentre("_dc_primal"); } }
+        public static DataCentre Aether { get { return new DataCentre("_dc_aether"); } }
+        public static DataCentre Crystal { get { return new DataCentre("_dc_crystal"); } }
+        public static DataCentre Chaos { get { return new DataCentre("_dc_chaos"); } }
+        public static DataCentre Light { get { return new DataCentre("_dc_light"); } }
+        public static DataCentre Materia { get { return new DataCentre("_dc_materia"); } }
+    }
+
+    public class ServerName : IRegion
     {
         private ServerName(string name) { Value = name; }
         public string Value { get; private set; }
