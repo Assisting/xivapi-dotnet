@@ -169,45 +169,44 @@ namespace xivapi
 
     public class Attributes
     {
-        // What is this information even *for*
         [JsonPropertyName("1")]
-        public int _1 { get; set; }
+        public int Strength { get; set; }
         [JsonPropertyName("2")]
-        public int _2 { get; set; }
+        public int Dexterity { get; set; }
         [JsonPropertyName("3")]
-        public int _3 { get; set; }
+        public int Vitality { get; set; }
         [JsonPropertyName("4")]
-        public int _4 { get; set; }
+        public int Intelligence { get; set; }
         [JsonPropertyName("5")]
-        public int _5 { get; set; }
+        public int Mind { get; set; }
         [JsonPropertyName("6")]
-        public int _6 { get; set; }
+        public int Piety { get; set; }
         [JsonPropertyName("7")]
-        public int _7 { get; set; }
+        public int HP { get; set; }
         [JsonPropertyName("8")]
-        public int _8 { get; set; }
+        public int MP { get; set; }
         [JsonPropertyName("19")]
-        public int _19 { get; set; }
+        public int Tenacity { get; set; }
         [JsonPropertyName("20")]
-        public int _20 { get; set; }
+        public int AttackPower { get; set; }
         [JsonPropertyName("21")]
-        public int _21 { get; set; }
+        public int Defense { get; set; }
         [JsonPropertyName("22")]
-        public int _22 { get; set; }
+        public int DirectHitRate { get; set; }
         [JsonPropertyName("24")]
-        public int _24 { get; set; }
+        public int MagicDefense { get; set; }
         [JsonPropertyName("27")]
-        public int _27 { get; set; }
+        public int CriticalHitRate { get; set; }
         [JsonPropertyName("33")]
-        public int _33 { get; set; }
+        public int AttackMagicPotency { get; set; }
         [JsonPropertyName("34")]
-        public int _34 { get; set; }
+        public int HealingMagicPotency { get; set; }
         [JsonPropertyName("44")]
-        public int _44 { get; set; }
+        public int Determination { get; set; }
         [JsonPropertyName("45")]
-        public int _45 { get; set; }
+        public int SkillSpeed { get; set; }
         [JsonPropertyName("46")]
-        public int _46 { get; set; }
+        public int SpellSpeed { get; set; }
     }
 
     public class Gear
