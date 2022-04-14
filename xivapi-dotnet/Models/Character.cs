@@ -244,6 +244,11 @@ namespace xivapi
     {
         public GrandCompanyName NameID { get; set; }
         public GrandCompanyRank RankID { get; set; }
+
+        public override string ToString()
+        {
+            return $"{NameID} {RankID}";
+        }
     }
 
     public enum GrandCompanyName
